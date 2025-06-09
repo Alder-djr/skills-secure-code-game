@@ -18,14 +18,19 @@ Item = namedtuple('Item', 'type, description, amount, quantity')
 
 def validorder(order: Order):
     net = 0
+    total_amount = 0
 
     for item in order.items:
         if item.type == 'payment':
             net += item.amount
         elif item.type == 'product':
             net -= item.amount * item.quantity
+            total_amount += item.amount * item.quantity
         else:
             return "Invalid item type: %s" % item.type
+
+    if total_amount > 10000:  # 假设订单金额阈值为10000
+        return "Total amount payable for an order exceeded"
 
     if net < 0:
         return "Order ID: %s - Payment insufficient: $%0.2f" % (order.id, -net)
